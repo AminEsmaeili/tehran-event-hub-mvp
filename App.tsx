@@ -160,13 +160,12 @@ const App: React.FC = () => {
       {/* Sidebar Toggle for Mobile */}
       <Button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="fixed bottom-6 left-1/2 -translate-x-1/2 md:hidden z-50 rounded-2xl shadow-2xl font-bold px-5 py-6 h-auto border-4 border-background animate-in fade-in slide-in-from-bottom-4 duration-500"
-        size="lg"
+        className="fixed bottom-10 left-1/2 -translate-x-1/2 md:hidden z-50 rounded-full shadow-2xl font-bold gap-2 px-6 py-2.5 h-auto border-2 border-background/50 backdrop-blur-md animate-in fade-in slide-in-from-bottom-4 duration-500"
+        variant="default"
+        size="sm"
       >
-        <span className="flex items-center gap-2">
-          {isSidebarOpen ? 'مشاهده نقشه' : 'لیست رویدادها'}
-          {isSidebarOpen ? <MapPin className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </span>
+        {isSidebarOpen ? 'مشاهده نقشه' : 'لیست رویدادها'}
+        {isSidebarOpen ? <MapPin className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
       </Button>
 
       {/* Sidebar */}
