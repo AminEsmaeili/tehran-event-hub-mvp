@@ -114,13 +114,13 @@ const MapWrapper: React.FC<MapWrapperProps> = ({
           className: cn('custom-marker', isSelected && 'ring-4 ring-primary/20')
         }).addTo(mapRef.current);
 
-        marker.bindTooltip(event.title, {
+        marker.bindTooltip(`<div class="custom-tooltip-box">${event.title}</div>`, {
           direction: 'top',
-          offset: [0, -20], // Adjusted for better alignment above the circle
           permanent: false,
           sticky: false,
-          className: 'font-sans font-bold text-xs rounded-lg border-none shadow-xl px-3 py-2 bg-card text-card-foreground rtl pointer-events-none'
-        });
+          html: true,
+          className: 'font-sans font-bold text-xs rounded-lg border-none shadow-xl px-3 py-2 bg-card text-card-foreground pointer-events-none'
+        } as any);
 
         marker.on('click', () => {
           onEventSelect(event.id);
@@ -149,11 +149,11 @@ const MapWrapper: React.FC<MapWrapperProps> = ({
         })
       }).addTo(mapRef.current);
 
-      userMarkerRef.current.bindTooltip("شما اینجاهستید", {
+      userMarkerRef.current.bindTooltip('<div class="custom-tooltip-box">شما اینجاهستید</div>', {
         direction: 'top',
-        offset: [0, -10],
+        html: true,
         className: 'font-sans font-bold text-xs px-2 py-1 bg-blue-600 text-white rounded'
-      });
+      } as any);
     }
 
     mapRef.current.flyTo([userLocation.lat, userLocation.lng], 16, {
