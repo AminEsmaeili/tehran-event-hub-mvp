@@ -1,0 +1,7 @@
+{
+  "name": "Copy of Tehran Event Hub MVP",
+  "description": "A map-based platform for discovering and checking into events across Tehran. Built for the local community to connect and explore city activities.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
