@@ -13,7 +13,7 @@ export const INITIAL_EVENTS: Event[] = [
     startTime: '۱۴۰۲/۰۸/۲۵ - ۱۷:۰۰',
     organizer: 'انجمن هنرهای تجسمی',
     checkInCount: 42,
-    imageUrl: 'https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?auto=format&fit=crop&q=80&w=800'
+    imageUrl: 'https://images.unsplash.com/photo-1460666819844-df9ed1dce20a?auto=format&fit=crop&q=80&w=800'
   },
   {
     id: '2',
@@ -26,7 +26,7 @@ export const INITIAL_EVENTS: Event[] = [
     startTime: '۱۴۰۲/۰۸/۲۶ - ۱۸:۳۰',
     organizer: 'جامعه پایتون تهران',
     checkInCount: 156,
-    imageUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=800'
+    imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800'
   },
   {
     id: '3',
