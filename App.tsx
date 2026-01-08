@@ -160,12 +160,12 @@ const App: React.FC = () => {
       {/* Sidebar Toggle for Mobile */}
       <Button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="fixed bottom-6 left-1/2 -translate-x-1/2 md:hidden z-50 rounded-full shadow-2xl font-bold px-6 py-6 h-auto"
+        className="fixed bottom-6 left-1/2 -translate-x-1/2 md:hidden z-50 rounded-2xl shadow-2xl font-bold px-5 py-6 h-auto border-4 border-background animate-in fade-in slide-in-from-bottom-4 duration-500"
         size="lg"
       >
         <span className="flex items-center gap-2">
           {isSidebarOpen ? 'مشاهده نقشه' : 'لیست رویدادها'}
-          <Menu className="h-5 w-5" />
+          {isSidebarOpen ? <MapPin className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </span>
       </Button>
 
@@ -350,24 +350,41 @@ const App: React.FC = () => {
           onEventSelect={handleEventSelect}
         />
 
-        <div className="absolute bottom-10 left-6 z-10 flex flex-col gap-3">
+        {/* Floating Controls - Repositioned for Mobile */}
+        <div className={cn(
+          "absolute z-10 flex flex-col gap-3 transition-all duration-300",
+          "md:bottom-10 md:left-6 md:top-auto top-6 left-6"
+        )}>
           <Button
             variant="card"
             size="icon"
-            className="h-14 w-14 rounded-2xl shadow-2xl bg-background hover:bg-muted border-2 border-primary/10 transition-all active:scale-90"
+            className="h-12 w-12 md:h-14 md:w-14 rounded-2xl shadow-2xl bg-background hover:bg-muted border-2 border-primary/10 transition-all active:scale-90"
             onClick={handleLocateUser}
             disabled={isLocating}
             title="مکان من"
           >
             {isLocating ? (
-              <Loader2 className="h-6 w-6 animate-spin text-primary" />
+              <Loader2 className="h-5 w-5 md:h-6 md:w-6 animate-spin text-primary" />
             ) : (
-              <Navigation className={cn("h-6 w-6", userLocation ? "text-blue-600 fill-blue-600/20" : "text-gray-500")} />
+              <Navigation className={cn("h-5 w-5 md:h-6 md:w-6", userLocation ? "text-blue-600 fill-blue-600/20" : "text-gray-500")} />
             )}
           </Button>
-
-          <div className="md:hidden h-12" />
         </div>
+
+        {/* Selected Event Card for Mobile Map View */}
+        {!isSidebarOpen && selectedEventId && (
+          <div className="absolute bottom-24 left-4 right-4 z-40 md:hidden animate-in fade-in slide-in-from-bottom-8 duration-300">
+            {filteredEvents.find(e => e.id === selectedEventId) && (
+              <EventCard
+                event={filteredEvents.find(e => e.id === selectedEventId)!}
+                isSelected={true}
+                isCheckedIn={checkedInIds.includes(selectedEventId)}
+                onCheckIn={handleCheckIn}
+                onSelect={() => { }}
+              />
+            )}
+          </div>
+        )}
 
         <div className="absolute top-6 left-6 z-10 hidden lg:block">
           <div className="bg-background/95 backdrop-blur px-5 py-4 rounded-2xl shadow-2xl border space-y-3">
