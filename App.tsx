@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { ModeToggle } from "./components/mode-toggle";
 import {
   Search,
   MapPin,
@@ -50,7 +51,7 @@ const App: React.FC = () => {
 
   const statuses: { id: StatusFilter; label: string }[] = [
     { id: 'all', label: 'همه زمان‌ها' },
-    { id: 'ongoing', label: 'در حال اجرا' },
+    { id: 'ongoing', label: 'جاری' },
     { id: 'upcoming', label: 'آینده' },
     { id: 'past', label: 'گذشته' },
   ];
@@ -106,7 +107,7 @@ const App: React.FC = () => {
 
       {/* Sidebar */}
       <aside className={cn(
-        "fixed inset-y-0 right-0 md:relative w-full md:w-[400px] h-full flex flex-col bg-card border-l shadow-xl z-40 transition-transform duration-300 ease-in-out",
+        "fixed inset-y-0 right-0 md:relative w-full md:w-[420px] h-full flex flex-col bg-card border-l shadow-xl z-40 transition-transform duration-300 ease-in-out",
         isSidebarOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"
       )}>
         {/* Header */}
@@ -121,10 +122,13 @@ const App: React.FC = () => {
                 <p className="text-[10px] text-muted-foreground font-medium italic">نبض رویدادهای شهر</p>
               </div>
             </div>
-            <div className="md:hidden">
-              <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)}>
-                <X className="h-6 w-6" />
-              </Button>
+            <div className="flex items-center gap-1">
+              <ModeToggle />
+              <div className="md:hidden">
+                <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)}>
+                  <X className="h-6 w-6" />
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -133,7 +137,7 @@ const App: React.FC = () => {
             <Input
               type="text"
               placeholder="جستجوی رویداد، هنر، تکنولوژی..."
-              className="pr-10 pl-12 py-6 bg-muted/50 border-none focus-visible:ring-primary rounded-xl text-sm"
+              className="pr-10 pl-12 py-6 bg-muted/50 border-none focus-visible:ring-primary rounded-xl text-sm rtl"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -178,18 +182,19 @@ const App: React.FC = () => {
               </div>
             </ScrollArea>
 
-            {/* Status Tabs */}
+            {/* Status Tabs - Fixed RTL and order */}
             <Tabs
               value={selectedStatus}
               onValueChange={(v) => setSelectedStatus(v as StatusFilter)}
               className="w-full"
+              dir="rtl"
             >
-              <TabsList className="w-full grid grid-cols-4 bg-muted/50 p-1">
+              <TabsList className="w-full grid grid-cols-4 bg-muted/50 p-1 rounded-xl h-9">
                 {statuses.map((stat) => (
                   <TabsTrigger
                     key={stat.id}
                     value={stat.id}
-                    className="text-[10px] font-bold h-7 data-[state=active]:shadow-sm"
+                    className="text-[10px] font-bold h-7 data-[state=active]:bg-card data-[state=active]:shadow-sm rounded-lg"
                   >
                     {stat.label}
                   </TabsTrigger>
@@ -218,51 +223,53 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Scrollable Event List */}
-        <ScrollArea className="flex-grow p-6" dir="rtl">
-          <div className="flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-md py-2 z-10 mb-4 px-1">
-            <h2 className="font-bold text-sm">
-              {selectedStatus === 'all'
-                ? (selectedCategory === 'all' ? 'همه رویدادها' : `رویدادهای ${categories.find(c => c.id === selectedCategory)?.label}`)
-                : `رویدادهای ${statuses.find(s => s.id === selectedStatus)?.label}`
-              }
-            </h2>
-            <Badge variant="secondary" className="font-black text-[10px] bg-primary/10 text-primary border-none">
-              {filteredEvents.length} رویداد
-            </Badge>
-          </div>
+        {/* Scrollable Event List - Added padding and ensuring full width for cards */}
+        <ScrollArea className="flex-grow" dir="rtl">
+          <div className="p-6 pb-24 md:pb-6">
+            <div className="flex items-center justify-between sticky top-0 bg-card/80 backdrop-blur-md py-2 z-10 mb-4 px-1">
+              <h2 className="font-bold text-sm">
+                {selectedStatus === 'all'
+                  ? (selectedCategory === 'all' ? 'همه رویدادها' : `رویدادهای ${categories.find(c => c.id === selectedCategory)?.label}`)
+                  : `رویدادهای ${statuses.find(s => s.id === selectedStatus)?.label}`
+                }
+              </h2>
+              <Badge variant="secondary" className="font-black text-[10px] bg-primary/10 text-primary border-none">
+                {filteredEvents.length} رویداد
+              </Badge>
+            </div>
 
-          <div className="space-y-4 pb-20 md:pb-6">
-            {filteredEvents.length > 0 ? (
-              filteredEvents.map(event => (
-                <EventCard
-                  key={event.id}
-                  event={event}
-                  isSelected={selectedEventId === event.id}
-                  isCheckedIn={checkedInIds.includes(event.id)}
-                  onCheckIn={handleCheckIn}
-                  onSelect={(e) => handleEventSelect(e.id)}
-                />
-              ))
-            ) : (
-              <div className="flex flex-col items-center justify-center py-20 text-muted-foreground space-y-4">
-                <MapPin className="h-12 w-12 opacity-10" />
-                <p className="text-sm font-medium">رویدادی پیدا نشد!</p>
-                {(selectedCategory !== 'all' || selectedStatus !== 'all') && (
-                  <Button
-                    variant="link"
-                    size="sm"
-                    onClick={() => {
-                      setSelectedCategory('all');
-                      setSelectedStatus('all');
-                    }}
-                    className="text-primary text-xs font-bold"
-                  >
-                    پاک کردن همه فیلترها
-                  </Button>
-                )}
-              </div>
-            )}
+            <div className="space-y-4">
+              {filteredEvents.length > 0 ? (
+                filteredEvents.map(event => (
+                  <EventCard
+                    key={event.id}
+                    event={event}
+                    isSelected={selectedEventId === event.id}
+                    isCheckedIn={checkedInIds.includes(event.id)}
+                    onCheckIn={handleCheckIn}
+                    onSelect={(e) => handleEventSelect(e.id)}
+                  />
+                ))
+              ) : (
+                <div className="flex flex-col items-center justify-center py-20 text-muted-foreground space-y-4">
+                  <MapPin className="h-12 w-12 opacity-10" />
+                  <p className="text-sm font-medium">رویدادی پیدا نشد!</p>
+                  {(selectedCategory !== 'all' || selectedStatus !== 'all') && (
+                    <Button
+                      variant="link"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedCategory('all');
+                        setSelectedStatus('all');
+                      }}
+                      className="text-primary text-xs font-bold"
+                    >
+                      پاک کردن همه فیلترها
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </ScrollArea>
 
