@@ -187,11 +187,6 @@ const App: React.FC = () => {
             </div>
             <div className="flex items-center gap-1">
               <ModeToggle />
-              <div className="md:hidden">
-                <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)}>
-                  <X className="h-6 w-6" />
-                </Button>
-              </div>
             </div>
           </div>
 
