@@ -79,8 +79,23 @@
   }
 
   body {
-    @apply bg-background text-foreground transition-colors duration-300;
+    @apply bg-background text-foreground transition-colors duration-500 ease-in-out;
   }
+}
+
+/* Smooth transition for all UI elements during theme change */
+*,
+*::before,
+*::after {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 500ms;
+  transition-timing-function: ease-in-out;
+}
+
+/* Prevent transition for map container to avoid flickering issues with Leaflet internals */
+.leaflet-container,
+.leaflet-container * {
+  transition: none !important;
 }
 
 .leaflet-container {

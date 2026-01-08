@@ -16,10 +16,9 @@ const MapWrapper: React.FC<MapWrapperProps> = ({ events, selectedEventId, checke
   const markersRef = useRef<{ [key: string]: any }>({});
 
   const getMarkerColor = (event: Event, isSelected: boolean, isCheckedIn: boolean) => {
-    if (isSelected) return "#ef4444"; // destructive color
-    if (isCheckedIn) return "#22c55e"; // success color
+    if (isSelected) return "#ef4444";
+    if (isCheckedIn) return "#22c55e";
 
-    // Category based colors
     switch (event.category) {
       case 'music': return "#8b5cf6";
       case 'tech': return "#3b82f6";
@@ -37,10 +36,14 @@ const MapWrapper: React.FC<MapWrapperProps> = ({ events, selectedEventId, checke
       center: [TEHRAN_CENTER.lat, TEHRAN_CENTER.lng],
       zoom: 12,
       zoomControl: false,
-      attributionControl: false
+      attributionControl: false,
+      // Smoother map interactions
+      zoomSnap: 0.1,
+      zoomDelta: 0.5,
+      wheelPxPerZoomLevel: 120,
+      tap: true
     });
 
-    // Use a cleaner map tile set
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; OpenStreetMap &copy; CARTO',
       subdomains: 'abcd',
@@ -62,7 +65,6 @@ const MapWrapper: React.FC<MapWrapperProps> = ({ events, selectedEventId, checke
     const L = (window as any).L;
     if (!L || !mapRef.current) return;
 
-    // Clear old markers that are no longer in events
     Object.keys(markersRef.current).forEach(id => {
       if (!events.find(e => e.id === id)) {
         markersRef.current[id].remove();
@@ -70,7 +72,6 @@ const MapWrapper: React.FC<MapWrapperProps> = ({ events, selectedEventId, checke
       }
     });
 
-    // Add or update markers
     events.forEach(event => {
       const isSelected = selectedEventId === event.id;
       const isCheckedIn = checkedInIds.includes(event.id);
@@ -95,7 +96,7 @@ const MapWrapper: React.FC<MapWrapperProps> = ({ events, selectedEventId, checke
           weight: 2,
           opacity: 1,
           fillOpacity: 0.8,
-          className: cn('custom-marker transition-all duration-300', isSelected && 'ring-4 ring-primary/20')
+          className: cn('custom-marker', isSelected && 'ring-4 ring-primary/20')
         }).addTo(mapRef.current);
 
         marker.bindTooltip(event.title, {
@@ -113,14 +114,14 @@ const MapWrapper: React.FC<MapWrapperProps> = ({ events, selectedEventId, checke
     });
   }, [events, selectedEventId, checkedInIds, onEventSelect]);
 
-  // Center on selected event
   useEffect(() => {
     if (!mapRef.current || !selectedEventId) return;
     const event = events.find(e => e.id === selectedEventId);
     if (event) {
       mapRef.current.setView([event.location.lat, event.location.lng], 15, {
         animate: true,
-        duration: 0.8
+        pan: { duration: 1 },
+        zoom: { animate: true }
       });
     }
   }, [selectedEventId, events]);
