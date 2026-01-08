@@ -1,0 +1,5 @@
+{
+    "app": "tehran-event-hub",
+    "platform": "react",
+    "port": 5173
+}

@@ -1,10 +1,29 @@
-
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Event, EventStatus } from './types';
 import { INITIAL_EVENTS } from './constants';
 import EventCard from './components/EventCard';
 import MapWrapper from './components/MapWrapper';
 import { getEventSuggestions } from './services/geminiService';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Search,
+  MapPin,
+  Sparkles,
+  Menu,
+  X,
+  Music,
+  Cpu,
+  Palette,
+  UtensilsCrossed,
+  Trophy,
+  Globe,
+  Loader2
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type Category = 'all' | 'music' | 'tech' | 'art' | 'food' | 'sport';
 type StatusFilter = 'all' | EventStatus;
@@ -20,13 +39,13 @@ const App: React.FC = () => {
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  const categories: { id: Category; label: string; icon: string }[] = [
-    { id: 'all', label: 'همه', icon: '🌍' },
-    { id: 'music', label: 'موسیقی', icon: '🎵' },
-    { id: 'tech', label: 'تکنولوژی', icon: '💻' },
-    { id: 'art', label: 'هنر', icon: '🎨' },
-    { id: 'food', label: 'غذا', icon: '🍔' },
-    { id: 'sport', label: 'ورزش', icon: '⚽' },
+  const categories: { id: Category; label: string; icon: React.ReactNode }[] = [
+    { id: 'all', label: 'همه', icon: <Globe className="w-3.5 h-3.5" /> },
+    { id: 'music', label: 'موسیقی', icon: <Music className="w-3.5 h-3.5" /> },
+    { id: 'tech', label: 'تکنولوژی', icon: <Cpu className="w-3.5 h-3.5" /> },
+    { id: 'art', label: 'هنر', icon: <Palette className="w-3.5 h-3.5" /> },
+    { id: 'food', label: 'غذا', icon: <UtensilsCrossed className="w-3.5 h-3.5" /> },
+    { id: 'sport', label: 'ورزش', icon: <Trophy className="w-3.5 h-3.5" /> },
   ];
 
   const statuses: { id: StatusFilter; label: string }[] = [
@@ -38,14 +57,14 @@ const App: React.FC = () => {
 
   const filteredEvents = useMemo(() => {
     return events.filter(e => {
-      const matchesSearch = 
-        e.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      const matchesSearch =
+        e.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         e.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
         e.description.toLowerCase().includes(searchQuery.toLowerCase());
-      
+
       const matchesCategory = selectedCategory === 'all' || e.category === selectedCategory;
       const matchesStatus = selectedStatus === 'all' || e.status === selectedStatus;
-      
+
       return matchesSearch && matchesCategory && matchesStatus;
     });
   }, [events, searchQuery, selectedCategory, selectedStatus]);
@@ -72,180 +91,184 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-gray-50 font-['Vazirmatn'] relative">
+    <div className="flex h-screen w-screen overflow-hidden bg-background font-sans relative" dir="rtl">
       {/* Sidebar Toggle for Mobile */}
-      <button 
+      <Button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="fixed bottom-6 left-1/2 -translate-x-1/2 md:hidden z-50 bg-blue-600 text-white px-6 py-3 rounded-full shadow-2xl font-bold flex items-center gap-2"
+        className="fixed bottom-6 left-1/2 -translate-x-1/2 md:hidden z-50 rounded-full shadow-2xl font-bold px-6 py-6 h-auto"
+        size="lg"
       >
-        {isSidebarOpen ? 'مشاهده نقشه' : 'لیست رویدادها'}
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
-        </svg>
-      </button>
+        <span className="flex items-center gap-2">
+          {isSidebarOpen ? 'مشاهده نقشه' : 'لیست رویدادها'}
+          <Menu className="h-5 w-5" />
+        </span>
+      </Button>
 
       {/* Sidebar */}
-      <aside className={`fixed inset-y-0 right-0 md:relative w-full md:w-[420px] h-full flex flex-col bg-white border-l shadow-2xl z-40 transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}`}>
+      <aside className={cn(
+        "fixed inset-y-0 right-0 md:relative w-full md:w-[400px] h-full flex flex-col bg-card border-l shadow-xl z-40 transition-transform duration-300 ease-in-out",
+        isSidebarOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"
+      )}>
         {/* Header */}
-        <header className="p-6 border-b bg-white sticky top-0 z-30 space-y-4">
+        <header className="p-6 border-b space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
+              <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground shadow-lg">
+                <MapPin className="h-6 w-6" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-800 tracking-tight">تهران هاب</h1>
-                <p className="text-xs text-gray-400 font-medium italic">نبض رویدادهای شهر</p>
+                <h1 className="text-xl font-bold tracking-tight">تهران هاب</h1>
+                <p className="text-[10px] text-muted-foreground font-medium italic">نبض رویدادهای شهر</p>
               </div>
             </div>
             <div className="md:hidden">
-               <button onClick={() => setIsSidebarOpen(false)} className="text-gray-400 p-2">
-                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                 </svg>
-               </button>
+              <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)}>
+                <X className="h-6 w-6" />
+              </Button>
             </div>
           </div>
 
           <div className="relative group">
-            <input 
-              type="text" 
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
+            <Input
+              type="text"
               placeholder="جستجوی رویداد، هنر، تکنولوژی..."
-              className="w-full pl-12 pr-4 py-3 bg-gray-50 border-2 border-transparent focus:border-blue-500 rounded-2xl text-sm transition-all outline-none"
+              className="pr-10 pl-12 py-6 bg-muted/50 border-none focus-visible:ring-primary rounded-xl text-sm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-              <button 
+            <div className="absolute left-2 top-1/2 -translate-y-1/2">
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={handleAiAsk}
                 disabled={isAiLoading}
-                className={`p-1.5 rounded-lg transition-colors ${isAiLoading ? 'bg-blue-100' : 'hover:bg-blue-50 text-blue-600'}`}
+                className="h-8 w-8 text-primary hover:bg-primary/10"
                 title="بپرس از هوش مصنوعی"
               >
                 {isAiLoading ? (
-                  <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                  <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
-                  </svg>
+                  <Sparkles className="h-4 w-4" />
                 )}
-              </button>
+              </Button>
             </div>
           </div>
 
           {/* Filters Wrapper */}
-          <div className="space-y-3">
+          <div className="space-y-4">
             {/* Category Chips */}
-            <div className="flex overflow-x-auto gap-2 no-scrollbar pb-1">
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-[11px] font-bold whitespace-nowrap transition-all border-2 ${
-                    selectedCategory === cat.id 
-                      ? 'bg-blue-600 border-blue-600 text-white shadow-md' 
-                      : 'bg-white border-gray-100 text-gray-500 hover:border-gray-200'
-                  }`}
-                >
-                  <span>{cat.icon}</span>
-                  {cat.label}
-                </button>
-              ))}
-            </div>
+            <ScrollArea className="w-full whitespace-nowrap pb-2" dir="rtl">
+              <div className="flex gap-2">
+                {categories.map((cat) => (
+                  <Button
+                    key={cat.id}
+                    variant={selectedCategory === cat.id ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={cn(
+                      "rounded-full h-8 px-4 text-xs font-bold gap-2",
+                      selectedCategory !== cat.id && "border-muted"
+                    )}
+                  >
+                    {cat.icon}
+                    {cat.label}
+                  </Button>
+                ))}
+              </div>
+            </ScrollArea>
 
             {/* Status Tabs */}
-            <div className="flex bg-gray-100 p-1 rounded-xl">
-              {statuses.map((stat) => (
-                <button
-                  key={stat.id}
-                  onClick={() => setSelectedStatus(stat.id)}
-                  className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold transition-all ${
-                    selectedStatus === stat.id
-                      ? 'bg-white text-blue-600 shadow-sm'
-                      : 'text-gray-400 hover:text-gray-600'
-                  }`}
-                >
-                  {stat.label}
-                </button>
-              ))}
-            </div>
+            <Tabs
+              value={selectedStatus}
+              onValueChange={(v) => setSelectedStatus(v as StatusFilter)}
+              className="w-full"
+            >
+              <TabsList className="w-full grid grid-cols-4 bg-muted/50 p-1">
+                {statuses.map((stat) => (
+                  <TabsTrigger
+                    key={stat.id}
+                    value={stat.id}
+                    className="text-[10px] font-bold h-7 data-[state=active]:shadow-sm"
+                  >
+                    {stat.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
           </div>
         </header>
 
         {/* AI Suggestion Area */}
         {aiSuggestion && (
-          <div className="mx-6 mt-4 p-5 bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-2xl shadow-xl relative animate-in fade-in slide-in-from-top-4 duration-500">
-            <button 
+          <div className="mx-6 mt-4 p-5 bg-primary text-primary-foreground rounded-2xl shadow-lg relative animate-in fade-in slide-in-from-top-4 duration-500">
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => setAiSuggestion(null)}
-              className="absolute top-3 left-3 text-white/40 hover:text-white transition-colors"
+              className="absolute top-2 left-2 h-6 w-6 text-primary-foreground/50 hover:text-primary-foreground hover:bg-white/10"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+              <X className="h-4 w-4" />
+            </Button>
             <div className="flex items-center gap-2 mb-2">
-              <div className="bg-white/20 p-1 rounded-md">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1a1 1 0 112 0v1a1 1 0 11-2 0zM13.536 14.95a1 1 0 010-1.414l.707-.707a1 1 0 011.414 1.414l-.707.707a1 1 0 01-1.414 0zM6.464 14.95l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 01-1.414 1.414z" />
-                </svg>
-              </div>
-              <span className="text-[10px] font-black uppercase tracking-widest opacity-80">هوش مصنوعی</span>
+              <Sparkles className="h-4 w-4 text-primary-foreground/80" />
+              <span className="text-[10px] font-black uppercase tracking-widest opacity-80 underline decoration-white/30 underline-offset-4">هوش مصنوعی</span>
             </div>
             <p className="text-sm leading-relaxed font-medium">{aiSuggestion}</p>
           </div>
         )}
 
         {/* Scrollable Event List */}
-        <div className="flex-grow overflow-y-auto p-6 space-y-4 no-scrollbar">
-          <div className="flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md py-2 z-10">
-            <h2 className="font-bold text-gray-800">
-              {selectedStatus === 'all' 
+        <ScrollArea className="flex-grow p-6" dir="rtl">
+          <div className="flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-md py-2 z-10 mb-4 px-1">
+            <h2 className="font-bold text-sm">
+              {selectedStatus === 'all'
                 ? (selectedCategory === 'all' ? 'همه رویدادها' : `رویدادهای ${categories.find(c => c.id === selectedCategory)?.label}`)
                 : `رویدادهای ${statuses.find(s => s.id === selectedStatus)?.label}`
               }
             </h2>
-            <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">{filteredEvents.length} رویداد</span>
+            <Badge variant="secondary" className="font-black text-[10px] bg-primary/10 text-primary border-none">
+              {filteredEvents.length} رویداد
+            </Badge>
           </div>
-          
-          {filteredEvents.length > 0 ? (
-            filteredEvents.map(event => (
-              <EventCard 
-                key={event.id}
-                event={event}
-                isSelected={selectedEventId === event.id}
-                isCheckedIn={checkedInIds.includes(event.id)}
-                onCheckIn={handleCheckIn}
-                onSelect={(e) => handleEventSelect(e.id)}
-              />
-            ))
-          ) : (
-            <div className="flex flex-col items-center justify-center py-20 text-gray-400 space-y-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              <p className="text-sm font-medium">رویدادی پیدا نشد!</p>
-              {(selectedCategory !== 'all' || selectedStatus !== 'all') && (
-                <button 
-                  onClick={() => {
-                    setSelectedCategory('all');
-                    setSelectedStatus('all');
-                  }}
-                  className="text-blue-600 text-xs font-bold underline"
-                >
-                  پاک کردن همه فیلترها
-                </button>
-              )}
-            </div>
-          )}
-        </div>
+
+          <div className="space-y-4 pb-20 md:pb-6">
+            {filteredEvents.length > 0 ? (
+              filteredEvents.map(event => (
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  isSelected={selectedEventId === event.id}
+                  isCheckedIn={checkedInIds.includes(event.id)}
+                  onCheckIn={handleCheckIn}
+                  onSelect={(e) => handleEventSelect(e.id)}
+                />
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center py-20 text-muted-foreground space-y-4">
+                <MapPin className="h-12 w-12 opacity-10" />
+                <p className="text-sm font-medium">رویدادی پیدا نشد!</p>
+                {(selectedCategory !== 'all' || selectedStatus !== 'all') && (
+                  <Button
+                    variant="link"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedCategory('all');
+                      setSelectedStatus('all');
+                    }}
+                    className="text-primary text-xs font-bold"
+                  >
+                    پاک کردن همه فیلترها
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+        </ScrollArea>
 
         {/* Footer Info */}
-        <footer className="p-5 border-t bg-gray-50/50">
-          <div className="flex justify-between items-center text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+        <footer className="p-4 border-t bg-muted/30">
+          <div className="flex justify-between items-center text-[10px] text-muted-foreground font-black uppercase tracking-wider">
             <span>نسخه آزمایشی ۱.۰</span>
             <span>طراحی شده برای تهران</span>
           </div>
@@ -253,30 +276,30 @@ const App: React.FC = () => {
       </aside>
 
       {/* Map Main View */}
-      <main className="flex-grow relative h-full bg-blue-50">
-        <MapWrapper 
+      <main className="flex-grow relative h-full bg-muted">
+        <MapWrapper
           events={filteredEvents}
           selectedEventId={selectedEventId}
           checkedInIds={checkedInIds}
           onEventSelect={handleEventSelect}
         />
-        
+
         {/* Map Legend (Desktop Only) */}
         <div className="absolute top-6 left-6 z-10 hidden lg:block">
-           <div className="bg-white/90 backdrop-blur px-4 py-3 rounded-2xl shadow-xl border border-white/20 space-y-2">
-             <div className="flex items-center gap-3">
-               <div className="w-3 h-3 rounded-full bg-[#ef4444] ring-4 ring-red-100"></div>
-               <span className="text-xs font-bold text-gray-600">انتخاب شده</span>
-             </div>
-             <div className="flex items-center gap-3">
-               <div className="w-3 h-3 rounded-full bg-[#22c55e] ring-4 ring-green-100"></div>
-               <span className="text-xs font-bold text-gray-600">شرکت کرده‌اید</span>
-             </div>
-             <div className="flex items-center gap-3">
-               <div className="w-3 h-3 rounded-full bg-[#3b82f6] ring-4 ring-blue-100"></div>
-               <span className="text-xs font-bold text-gray-600">رویداد فعال</span>
-             </div>
-           </div>
+          <div className="bg-background/95 backdrop-blur px-5 py-4 rounded-2xl shadow-2xl border space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 rounded-full bg-destructive ring-4 ring-destructive/10"></div>
+              <span className="text-[11px] font-bold text-muted-foreground">انتخاب شده</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 rounded-full bg-green-500 ring-4 ring-green-100"></div>
+              <span className="text-[11px] font-bold text-muted-foreground">شرکت کرده‌اید</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 rounded-full bg-primary ring-4 ring-primary/10"></div>
+              <span className="text-[11px] font-bold text-muted-foreground">رویداد فعال</span>
+            </div>
+          </div>
         </div>
       </main>
     </div>
