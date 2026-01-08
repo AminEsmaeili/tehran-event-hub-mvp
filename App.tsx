@@ -94,13 +94,14 @@ const App: React.FC = () => {
     setIsAiLoading(false);
   };
 
-  const handleLocateUser = () => {
+  const requestLocation = (tries = 0) => {
     setIsLocating(true);
-    if (!navigator.geolocation) {
-      alert("مرورگر شما از قابلیت مکان‌یابی پشتیبانی نمی‌کند.");
-      setIsLocating(false);
-      return;
-    }
+
+    const options = {
+      enableHighAccuracy: tries === 0, // Try high accuracy first, then fallback
+      timeout: 10000,
+      maximumAge: 30000 // Accept a cached position up to 30s old
+    };
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -111,21 +112,34 @@ const App: React.FC = () => {
         setIsLocating(false);
       },
       (error) => {
-        // Fallback for unavailable position error (common on some desktops/networks)
-        console.error("Geolocation error:", error);
-        if (error.code === error.POSITION_UNAVAILABLE) {
-          alert("مکان‌یابی فعلاً در دسترس نیست. لطفاً دقایقی دیگر تلاش کنید یا تنظیمات GPS خود را بررسی کنید.");
+        console.error("Geolocation attempt", tries, "failed:", error);
+
+        if (tries < 1 && error.code === error.POSITION_UNAVAILABLE) {
+          // Retry once with lower accuracy
+          requestLocation(tries + 1);
         } else {
-          alert("خطا در مکان‌یابی: " + error.message);
+          let message = "خطا در مکان‌یابی.";
+          if (error.code === error.PERMISSION_DENIED) {
+            message = "شما اجازه دسترسی به مکان را ندادید. لطفاً تنظیمات مرورگر خود را چک کنید.";
+          } else if (error.code === error.POSITION_UNAVAILABLE) {
+            message = "سیگنال مکان‌یابی دریافت نشد. اگر از فیلترشکن استفاده می‌کنید آن را خاموش کرده و دوباره امتحان کنید.";
+          } else if (error.code === error.TIMEOUT) {
+            message = "زمان درخواست تمام شد. لطفاً دوباره تلاش کنید.";
+          }
+          alert(message);
+          setIsLocating(false);
         }
-        setIsLocating(false);
       },
-      {
-        enableHighAccuracy: false, // Changed to false for better compatibility on networks/desktops
-        timeout: 10000,
-        maximumAge: 0
-      }
+      options
     );
+  };
+
+  const handleLocateUser = () => {
+    if (!navigator.geolocation) {
+      alert("مرورگر شما از قابلیت مکان‌یابی پشتیبانی نمی‌کند.");
+      return;
+    }
+    requestLocation(0);
   };
 
   return (
@@ -196,7 +210,6 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          {/* Filters Wrapper */}
           <div className="space-y-4">
             <ScrollArea className="w-full whitespace-nowrap pb-2" dir="rtl">
               <div className="flex gap-2">
@@ -239,7 +252,6 @@ const App: React.FC = () => {
           </div>
         </header>
 
-        {/* AI Suggestion Area */}
         {aiSuggestion && (
           <div className="mx-6 mt-4 p-5 bg-primary text-primary-foreground rounded-2xl shadow-lg relative animate-in fade-in slide-in-from-top-4 duration-500">
             <Button
@@ -258,7 +270,6 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Scrollable Event List */}
         <ScrollArea className="flex-grow" dir="rtl">
           <div className="p-6 pb-24 md:pb-6">
             <div className="flex items-center justify-between sticky top-0 bg-card/80 backdrop-blur-md py-2 z-10 mb-4 px-1">
@@ -308,7 +319,6 @@ const App: React.FC = () => {
           </div>
         </ScrollArea>
 
-        {/* Footer Info */}
         <footer className="p-4 border-t bg-muted/30">
           <div className="flex justify-between items-center text-[10px] text-muted-foreground font-black uppercase tracking-wider">
             <span>نسخه آزمایشی ۱.۰</span>
@@ -317,7 +327,6 @@ const App: React.FC = () => {
         </footer>
       </aside>
 
-      {/* Map Main View */}
       <main className="flex-grow relative h-full bg-muted overflow-hidden">
         <MapWrapper
           events={filteredEvents}
@@ -327,9 +336,7 @@ const App: React.FC = () => {
           onEventSelect={handleEventSelect}
         />
 
-        {/* Floating Controls - Moved to Bottom Left */}
         <div className="absolute bottom-10 left-6 z-10 flex flex-col gap-3">
-          {/* Locate Me Button */}
           <Button
             variant="card"
             size="icon"
@@ -345,11 +352,9 @@ const App: React.FC = () => {
             )}
           </Button>
 
-          {/* Mobile Only Space or Extras */}
           <div className="md:hidden h-12" />
         </div>
 
-        {/* Map Legend (Moved to Top Left or Right) */}
         <div className="absolute top-6 left-6 z-10 hidden lg:block">
           <div className="bg-background/95 backdrop-blur px-5 py-4 rounded-2xl shadow-2xl border space-y-3">
             <div className="flex items-center gap-3">
