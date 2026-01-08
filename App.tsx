@@ -111,10 +111,20 @@ const App: React.FC = () => {
         setIsLocating(false);
       },
       (error) => {
-        alert("خطا در مکان‌یابی: " + error.message);
+        // Fallback for unavailable position error (common on some desktops/networks)
+        console.error("Geolocation error:", error);
+        if (error.code === error.POSITION_UNAVAILABLE) {
+          alert("مکان‌یابی فعلاً در دسترس نیست. لطفاً دقایقی دیگر تلاش کنید یا تنظیمات GPS خود را بررسی کنید.");
+        } else {
+          alert("خطا در مکان‌یابی: " + error.message);
+        }
         setIsLocating(false);
       },
-      { enableHighAccuracy: true }
+      {
+        enableHighAccuracy: false, // Changed to false for better compatibility on networks/desktops
+        timeout: 10000,
+        maximumAge: 0
+      }
     );
   };
 
@@ -188,7 +198,6 @@ const App: React.FC = () => {
 
           {/* Filters Wrapper */}
           <div className="space-y-4">
-            {/* Category Chips */}
             <ScrollArea className="w-full whitespace-nowrap pb-2" dir="rtl">
               <div className="flex gap-2">
                 {categories.map((cat) => (
@@ -209,7 +218,6 @@ const App: React.FC = () => {
               </div>
             </ScrollArea>
 
-            {/* Status Tabs */}
             <Tabs
               value={selectedStatus}
               onValueChange={(v) => setSelectedStatus(v as StatusFilter)}
@@ -310,7 +318,7 @@ const App: React.FC = () => {
       </aside>
 
       {/* Map Main View */}
-      <main className="flex-grow relative h-full bg-muted">
+      <main className="flex-grow relative h-full bg-muted overflow-hidden">
         <MapWrapper
           events={filteredEvents}
           selectedEventId={selectedEventId}
@@ -319,10 +327,31 @@ const App: React.FC = () => {
           onEventSelect={handleEventSelect}
         />
 
-        {/* Floating Controls */}
-        <div className="absolute top-6 left-6 z-10 flex flex-col gap-3">
-          {/* Map Legend (Desktop Only) */}
-          <div className="bg-background/95 backdrop-blur px-5 py-4 rounded-2xl shadow-2xl border space-y-3 hidden lg:block">
+        {/* Floating Controls - Moved to Bottom Left */}
+        <div className="absolute bottom-10 left-6 z-10 flex flex-col gap-3">
+          {/* Locate Me Button */}
+          <Button
+            variant="card"
+            size="icon"
+            className="h-14 w-14 rounded-2xl shadow-2xl bg-background hover:bg-muted border-2 border-primary/10 transition-all active:scale-90"
+            onClick={handleLocateUser}
+            disabled={isLocating}
+            title="مکان من"
+          >
+            {isLocating ? (
+              <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            ) : (
+              <Navigation className={cn("h-6 w-6", userLocation ? "text-blue-600 fill-blue-600/20" : "text-gray-500")} />
+            )}
+          </Button>
+
+          {/* Mobile Only Space or Extras */}
+          <div className="md:hidden h-12" />
+        </div>
+
+        {/* Map Legend (Moved to Top Left or Right) */}
+        <div className="absolute top-6 left-6 z-10 hidden lg:block">
+          <div className="bg-background/95 backdrop-blur px-5 py-4 rounded-2xl shadow-2xl border space-y-3">
             <div className="flex items-center gap-3">
               <div className="w-3 h-3 rounded-full bg-destructive ring-4 ring-destructive/10"></div>
               <span className="text-[11px] font-bold text-muted-foreground">انتخاب شده</span>
@@ -336,22 +365,6 @@ const App: React.FC = () => {
               <span className="text-[11px] font-bold text-muted-foreground">رویداد فعال</span>
             </div>
           </div>
-
-          {/* Locate Me Button */}
-          <Button
-            variant="card"
-            size="icon"
-            className="h-12 w-12 rounded-2xl shadow-2xl bg-background hover:bg-muted border transition-all active:scale-90"
-            onClick={handleLocateUser}
-            disabled={isLocating}
-            title="مکان من"
-          >
-            {isLocating ? (
-              <Loader2 className="h-5 w-5 animate-spin text-primary" />
-            ) : (
-              <Navigation className={cn("h-5 w-5", userLocation ? "text-blue-600 fill-blue-600/20" : "text-gray-500")} />
-            )}
-          </Button>
         </div>
       </main>
     </div>

@@ -46,17 +46,14 @@ const MapWrapper: React.FC<MapWrapperProps> = ({
       zoom: 12,
       zoomControl: false,
       attributionControl: false,
-      // Fluid zoom and pan options
-      zoomSnap: 0.1,
-      zoomDelta: 0.1,
-      wheelPxPerZoomLevel: 150,
+      // Optimized for snappier manual zooming while keeping flyTo smooth
+      zoomSnap: 1,
+      zoomDelta: 1,
+      wheelPxPerZoomLevel: 60,
       zoomAnimation: true,
-      zoomAnimationThreshold: 10,
       fadeAnimation: true,
       markerZoomAnimation: true,
-      inertia: true,
-      inertiaDeceleration: 3000,
-      easeLinearity: 0.1
+      inertia: true
     });
 
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
@@ -138,6 +135,7 @@ const MapWrapper: React.FC<MapWrapperProps> = ({
       userMarkerRef.current.setLatLng([userLocation.lat, userLocation.lng]);
     } else {
       userMarkerRef.current = L.marker([userLocation.lat, userLocation.lng], {
+        zIndexOffset: 1000,
         icon: L.divIcon({
           className: 'user-location-marker',
           html: '<div class="relative flex h-5 w-5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-5 w-5 bg-blue-600 border-2 border-white shadow-lg"></span></div>',
@@ -152,8 +150,7 @@ const MapWrapper: React.FC<MapWrapperProps> = ({
       });
     }
 
-    // Smoothly zoom to user location if it was just acquired
-    mapRef.current.flyTo([userLocation.lat, userLocation.lng], 15, {
+    mapRef.current.flyTo([userLocation.lat, userLocation.lng], 16, {
       duration: 1.5,
       easeLinearity: 0.25
     });
