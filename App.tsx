@@ -22,7 +22,8 @@ import {
   UtensilsCrossed,
   Trophy,
   Globe,
-  Loader2
+  Loader2,
+  Navigation
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -39,6 +40,8 @@ const App: React.FC = () => {
   const [aiSuggestion, setAiSuggestion] = useState<string | null>(null);
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [isLocating, setIsLocating] = useState(false);
 
   const categories: { id: Category; label: string; icon: React.ReactNode }[] = [
     { id: 'all', label: 'همه', icon: <Globe className="w-3.5 h-3.5" /> },
@@ -89,6 +92,30 @@ const App: React.FC = () => {
     const suggestion = await getEventSuggestions(searchQuery);
     setAiSuggestion(suggestion || "متأسفانه چیزی پیدا نشد.");
     setIsAiLoading(false);
+  };
+
+  const handleLocateUser = () => {
+    setIsLocating(true);
+    if (!navigator.geolocation) {
+      alert("مرورگر شما از قابلیت مکان‌یابی پشتیبانی نمی‌کند.");
+      setIsLocating(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        });
+        setIsLocating(false);
+      },
+      (error) => {
+        alert("خطا در مکان‌یابی: " + error.message);
+        setIsLocating(false);
+      },
+      { enableHighAccuracy: true }
+    );
   };
 
   return (
@@ -182,7 +209,7 @@ const App: React.FC = () => {
               </div>
             </ScrollArea>
 
-            {/* Status Tabs - Fixed RTL and order */}
+            {/* Status Tabs */}
             <Tabs
               value={selectedStatus}
               onValueChange={(v) => setSelectedStatus(v as StatusFilter)}
@@ -223,7 +250,7 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Scrollable Event List - Added padding and ensuring full width for cards */}
+        {/* Scrollable Event List */}
         <ScrollArea className="flex-grow" dir="rtl">
           <div className="p-6 pb-24 md:pb-6">
             <div className="flex items-center justify-between sticky top-0 bg-card/80 backdrop-blur-md py-2 z-10 mb-4 px-1">
@@ -288,12 +315,14 @@ const App: React.FC = () => {
           events={filteredEvents}
           selectedEventId={selectedEventId}
           checkedInIds={checkedInIds}
+          userLocation={userLocation}
           onEventSelect={handleEventSelect}
         />
 
-        {/* Map Legend (Desktop Only) */}
-        <div className="absolute top-6 left-6 z-10 hidden lg:block">
-          <div className="bg-background/95 backdrop-blur px-5 py-4 rounded-2xl shadow-2xl border space-y-3">
+        {/* Floating Controls */}
+        <div className="absolute top-6 left-6 z-10 flex flex-col gap-3">
+          {/* Map Legend (Desktop Only) */}
+          <div className="bg-background/95 backdrop-blur px-5 py-4 rounded-2xl shadow-2xl border space-y-3 hidden lg:block">
             <div className="flex items-center gap-3">
               <div className="w-3 h-3 rounded-full bg-destructive ring-4 ring-destructive/10"></div>
               <span className="text-[11px] font-bold text-muted-foreground">انتخاب شده</span>
@@ -307,6 +336,22 @@ const App: React.FC = () => {
               <span className="text-[11px] font-bold text-muted-foreground">رویداد فعال</span>
             </div>
           </div>
+
+          {/* Locate Me Button */}
+          <Button
+            variant="card"
+            size="icon"
+            className="h-12 w-12 rounded-2xl shadow-2xl bg-background hover:bg-muted border transition-all active:scale-90"
+            onClick={handleLocateUser}
+            disabled={isLocating}
+            title="مکان من"
+          >
+            {isLocating ? (
+              <Loader2 className="h-5 w-5 animate-spin text-primary" />
+            ) : (
+              <Navigation className={cn("h-5 w-5", userLocation ? "text-blue-600 fill-blue-600/20" : "text-gray-500")} />
+            )}
+          </Button>
         </div>
       </main>
     </div>
