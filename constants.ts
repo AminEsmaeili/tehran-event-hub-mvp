@@ -13,7 +13,7 @@ export const INITIAL_EVENTS: Event[] = [
     startTime: '۱۴۰۲/۰۸/۲۵ - ۱۷:۰۰',
     organizer: 'انجمن هنرهای تجسمی',
     checkInCount: 42,
-    imageUrl: 'https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?q=80&w=800&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1518998053574-53f1f61fdb50?q=80&w=800&auto=format&fit=crop'
   },
   {
     id: '2',
@@ -156,7 +156,7 @@ export const INITIAL_EVENTS: Event[] = [
     startTime: '۱۴۰۲/۰۹/۲۰ - ۱۹:۰۰',
     organizer: 'آموزشگاه موسیقی چاووش',
     checkInCount: 112,
-    imageUrl: 'https://images.unsplash.com/photo-1552422535-c45813c61732?q=80&w=800&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1520527053377-4710dbf6c0df?q=80&w=800&auto=format&fit=crop'
   },
   {
     id: '13',
