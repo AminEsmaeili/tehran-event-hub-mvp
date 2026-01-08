@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { Event, EventStatus } from './types';
 import { INITIAL_EVENTS } from './constants';
 import EventCard from './components/EventCard';
@@ -141,6 +141,19 @@ const App: React.FC = () => {
     }
     requestLocation(0);
   };
+
+  // Auto-scroll to selected event in sidebar
+  useEffect(() => {
+    if (selectedEventId) {
+      const element = document.getElementById(`event-card-${selectedEventId}`);
+      if (element) {
+        element.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+        });
+      }
+    }
+  }, [selectedEventId]);
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-background font-sans relative" dir="rtl">
@@ -287,14 +300,15 @@ const App: React.FC = () => {
             <div className="space-y-4">
               {filteredEvents.length > 0 ? (
                 filteredEvents.map(event => (
-                  <EventCard
-                    key={event.id}
-                    event={event}
-                    isSelected={selectedEventId === event.id}
-                    isCheckedIn={checkedInIds.includes(event.id)}
-                    onCheckIn={handleCheckIn}
-                    onSelect={(e) => handleEventSelect(e.id)}
-                  />
+                  <div key={event.id} id={`event-card-${event.id}`} className="scroll-mt-24">
+                    <EventCard
+                      event={event}
+                      isSelected={selectedEventId === event.id}
+                      isCheckedIn={checkedInIds.includes(event.id)}
+                      onCheckIn={handleCheckIn}
+                      onSelect={(e) => handleEventSelect(e.id)}
+                    />
+                  </div>
                 ))
               ) : (
                 <div className="flex flex-col items-center justify-center py-20 text-muted-foreground space-y-4">
