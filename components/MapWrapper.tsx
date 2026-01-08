@@ -91,7 +91,7 @@ const MapWrapper: React.FC<MapWrapperProps> = ({
       if (markersRef.current[event.id]) {
         markersRef.current[event.id].setStyle({
           fillColor: color,
-          radius: isSelected ? 12 : 8,
+          radius: isSelected ? 10 : 6,
           fillOpacity: isSelected ? 1 : 0.8,
           weight: isSelected ? 3 : 2
         });
@@ -105,13 +105,13 @@ const MapWrapper: React.FC<MapWrapperProps> = ({
         }
       } else {
         const marker = L.circleMarker([event.location.lat, event.location.lng], {
-          radius: isSelected ? 12 : 8,
+          radius: isSelected ? 10 : 6,
           fillColor: color,
           color: "#fff",
           weight: 2,
           opacity: 1,
           fillOpacity: 0.8,
-          className: cn('custom-marker', isSelected && 'ring-4 ring-primary/20')
+          className: 'custom-marker'
         }).addTo(mapRef.current);
 
         marker.bindTooltip(`<div class="custom-tooltip-box">${event.title}</div>`, {
@@ -156,7 +156,7 @@ const MapWrapper: React.FC<MapWrapperProps> = ({
       } as any);
     }
 
-    mapRef.current.flyTo([userLocation.lat, userLocation.lng], 16, {
+    mapRef.current.flyTo([userLocation.lat, userLocation.lng], 14, {
       duration: 1.5,
       easeLinearity: 0.25
     });
@@ -167,7 +167,7 @@ const MapWrapper: React.FC<MapWrapperProps> = ({
     if (!mapRef.current || !selectedEventId) return;
     const event = events.find(e => e.id === selectedEventId);
     if (event) {
-      mapRef.current.flyTo([event.location.lat, event.location.lng], 15, {
+      mapRef.current.flyTo([event.location.lat, event.location.lng], 13, {
         duration: 1.2,
         easeLinearity: 0.25
       });
