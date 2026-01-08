@@ -13,7 +13,7 @@ export const INITIAL_EVENTS: Event[] = [
     startTime: '۱۴۰۲/۰۸/۲۵ - ۱۷:۰۰',
     organizer: 'انجمن هنرهای تجسمی',
     checkInCount: 42,
-    imageUrl: 'https://images.unsplash.com/photo-1518998053574-53f1f61fdb50?q=80&w=800&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?q=80&w=800&auto=format&fit=crop'
   },
   {
     id: '2',
