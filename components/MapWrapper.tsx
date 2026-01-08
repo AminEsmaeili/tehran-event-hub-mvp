@@ -46,7 +46,6 @@ const MapWrapper: React.FC<MapWrapperProps> = ({
       zoom: 12,
       zoomControl: false,
       attributionControl: false,
-      // Optimized for snappier manual zooming while keeping flyTo smooth
       zoomSnap: 1,
       zoomDelta: 1,
       wheelPxPerZoomLevel: 60,
@@ -99,6 +98,10 @@ const MapWrapper: React.FC<MapWrapperProps> = ({
 
         if (isSelected) {
           markersRef.current[event.id].bringToFront();
+          // Automatically open tooltip for selected event
+          markersRef.current[event.id].openTooltip();
+        } else {
+          markersRef.current[event.id].closeTooltip();
         }
       } else {
         const marker = L.circleMarker([event.location.lat, event.location.lng], {
@@ -113,8 +116,10 @@ const MapWrapper: React.FC<MapWrapperProps> = ({
 
         marker.bindTooltip(event.title, {
           direction: 'top',
-          offset: [0, -10],
-          className: 'font-sans font-bold text-xs rounded-lg border-none shadow-xl px-3 py-2 bg-card text-card-foreground rtl'
+          offset: [12, -15], // Adjusted for better alignment above the circle
+          permanent: false,
+          sticky: false,
+          className: 'font-sans font-bold text-xs rounded-lg border-none shadow-xl px-3 py-2 bg-card text-card-foreground rtl pointer-events-none'
         });
 
         marker.on('click', () => {
@@ -146,6 +151,7 @@ const MapWrapper: React.FC<MapWrapperProps> = ({
 
       userMarkerRef.current.bindTooltip("شما اینجاهستید", {
         direction: 'top',
+        offset: [0, -10],
         className: 'font-sans font-bold text-xs px-2 py-1 bg-blue-600 text-white rounded'
       });
     }

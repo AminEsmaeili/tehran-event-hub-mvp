@@ -13,7 +13,7 @@ export const INITIAL_EVENTS: Event[] = [
     startTime: '۱۴۰۲/۰۸/۲۵ - ۱۷:۰۰',
     organizer: 'انجمن هنرهای تجسمی',
     checkInCount: 42,
-    imageUrl: 'https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?q=80&w=600&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1460666819844-df9ed1dce20a?q=80&w=600&auto=format&fit=crop'
   },
   {
     id: '2',
@@ -26,7 +26,7 @@ export const INITIAL_EVENTS: Event[] = [
     startTime: '۱۴۰۲/۰۸/۲۶ - ۱۸:۳۰',
     organizer: 'جامعه پایتون تهران',
     checkInCount: 156,
-    imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=600&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=600&auto=format&fit=crop'
   },
   {
     id: '3',
@@ -39,7 +39,7 @@ export const INITIAL_EVENTS: Event[] = [
     startTime: '۱۴۰۲/۰۸/۲۸ - ۲۰:۰۰',
     organizer: 'بنیاد رودکی',
     checkInCount: 210,
-    imageUrl: 'https://images.unsplash.com/photo-1459749411177-042180ce673a?q=80&w=600&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600&auto=format&fit=crop'
   },
   {
     id: '4',
@@ -52,7 +52,7 @@ export const INITIAL_EVENTS: Event[] = [
     startTime: '۱۴۰۲/۰۸/۳۰ - ۱۰:۰۰',
     organizer: 'سازمان گردشگری',
     checkInCount: 89,
-    imageUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=600&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?q=80&w=600&auto=format&fit=crop'
   },
   {
     id: '5',
@@ -78,7 +78,7 @@ export const INITIAL_EVENTS: Event[] = [
     startTime: '۱۴۰۲/۰۹/۰۵ - ۱۵:۳۰',
     organizer: 'خانه هنرمندان',
     checkInCount: 25,
-    imageUrl: 'https://images.unsplash.com/photo-1565191999001-551c187427bb?q=80&w=600&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1525964062238-0381f9de5472?q=80&w=600&auto=format&fit=crop'
   },
   {
     id: '7',
