@@ -13,7 +13,7 @@ export const INITIAL_EVENTS: Event[] = [
     startTime: '۱۴۰۲/۰۸/۲۵ - ۱۷:۰۰',
     organizer: 'انجمن هنرهای تجسمی',
     checkInCount: 42,
-    imageUrl: 'https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?q=80&w=400&h=300&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?q=80&w=600&auto=format&fit=crop'
   },
   {
     id: '2',
@@ -26,7 +26,7 @@ export const INITIAL_EVENTS: Event[] = [
     startTime: '۱۴۰۲/۰۸/۲۶ - ۱۸:۳۰',
     organizer: 'جامعه پایتون تهران',
     checkInCount: 156,
-    imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=400&h=300&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=600&auto=format&fit=crop'
   },
   {
     id: '3',
@@ -39,7 +39,7 @@ export const INITIAL_EVENTS: Event[] = [
     startTime: '۱۴۰۲/۰۸/۲۸ - ۲۰:۰۰',
     organizer: 'بنیاد رودکی',
     checkInCount: 210,
-    imageUrl: 'https://images.unsplash.com/photo-1459749411177-042180ce673a?q=80&w=400&h=300&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1459749411177-042180ce673a?q=80&w=600&auto=format&fit=crop'
   },
   {
     id: '4',
@@ -52,7 +52,7 @@ export const INITIAL_EVENTS: Event[] = [
     startTime: '۱۴۰۲/۰۸/۳۰ - ۱۰:۰۰',
     organizer: 'سازمان گردشگری',
     checkInCount: 89,
-    imageUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=400&h=300&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=600&auto=format&fit=crop'
   },
   {
     id: '5',
@@ -65,7 +65,7 @@ export const INITIAL_EVENTS: Event[] = [
     startTime: '۱۴۰۲/۰۹/۰۲ - ۰۹:۰۰',
     organizer: 'مرکز آپا',
     checkInCount: 120,
-    imageUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=400&h=300&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=600&auto=format&fit=crop'
   },
   {
     id: '6',
@@ -78,7 +78,7 @@ export const INITIAL_EVENTS: Event[] = [
     startTime: '۱۴۰۲/۰۹/۰۵ - ۱۵:۳۰',
     organizer: 'خانه هنرمندان',
     checkInCount: 25,
-    imageUrl: 'https://images.unsplash.com/photo-1565191999001-551c187427bb?q=80&w=400&h=300&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1565191999001-551c187427bb?q=80&w=600&auto=format&fit=crop'
   },
   {
     id: '7',
@@ -91,7 +91,7 @@ export const INITIAL_EVENTS: Event[] = [
     startTime: '۱۴۰۲/۰۹/۰۸ - ۱۸:۰۰',
     organizer: 'خیریه همت',
     checkInCount: 340,
-    imageUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=400&h=300&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=600&auto=format&fit=crop'
   },
   {
     id: '8',
@@ -104,7 +104,7 @@ export const INITIAL_EVENTS: Event[] = [
     startTime: '۱۴۰۲/۰۹/۱۰ - ۰۷:۰۰',
     organizer: 'هیئت دوچرخه‌سواری',
     checkInCount: 65,
-    imageUrl: 'https://images.unsplash.com/photo-1541625602330-2277a1c4b66d?q=80&w=400&h=300&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1541625602330-2277a1c4b66d?q=80&w=600&auto=format&fit=crop'
   },
   {
     id: '9',
@@ -117,7 +117,85 @@ export const INITIAL_EVENTS: Event[] = [
     startTime: '۱۴۰۲/۰۹/۱۲ - ۱۶:۰۰',
     organizer: 'انجمن باریستاهای ایران',
     checkInCount: 52,
-    imageUrl: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?q=80&w=400&h=300&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?q=80&w=600&auto=format&fit=crop'
+  },
+  {
+    id: '10',
+    title: 'تئاتر خیابانی تهران',
+    description: 'اجرای نمایش‌های کمدی و اجتماعی در فضای باز.',
+    location: { lat: 35.6992, lng: 51.4070 },
+    address: 'چهارراه ولیعصر، تئاتر شهر',
+    category: 'art',
+    status: 'upcoming',
+    startTime: '۱۴۰۲/۰۹/۱۵ - ۱۸:۰۰',
+    organizer: 'خانه تئاتر',
+    checkInCount: 78,
+    imageUrl: 'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?q=80&w=600&auto=format&fit=crop'
+  },
+  {
+    id: '11',
+    title: 'سمینار استارتاپ‌های موفق',
+    description: 'اشتراک‌گذاری تجربیات بنیان‌گذاران استارتاپ‌های برتر ایران.',
+    location: { lat: 35.7448, lng: 51.3753 },
+    address: 'بزرگراه همت، برج میلاد',
+    category: 'tech',
+    status: 'upcoming',
+    startTime: '۱۴۰۲/۰۹/۱۸ - ۰۹:۳۰',
+    organizer: 'شتاب‌دهنده دیموند',
+    checkInCount: 450,
+    imageUrl: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?q=80&w=600&auto=format&fit=crop'
+  },
+  {
+    id: '12',
+    title: 'رسیتال پیانو آناهیتا',
+    description: 'اجرای قطعات کلاسیک از شوپن و بتهوون.',
+    location: { lat: 35.8116, lng: 51.4632 },
+    address: 'نیاوران، فرهنگسرای نیاوران',
+    category: 'music',
+    status: 'ongoing',
+    startTime: '۱۴۰۲/۰۹/۲۰ - ۱۹:۰۰',
+    organizer: 'آموزشگاه موسیقی چاووش',
+    checkInCount: 112,
+    imageUrl: 'https://images.unsplash.com/photo-1520527053377-4710dbf6c0df?q=80&w=600&auto=format&fit=crop'
+  },
+  {
+    id: '13',
+    title: 'جشنواره بستنی و دسر',
+    description: 'تنوعی بی‌نظیر از بستنی‌های سنتی و مدرن.',
+    location: { lat: 35.7752, lng: 51.4332 },
+    address: 'خیابان ولیعصر، باغ فردوس',
+    category: 'food',
+    status: 'upcoming',
+    startTime: '۱۴۰۲/۰۹/۲۲ - ۱۶:۳۰',
+    organizer: 'اتحادیه قنادان',
+    checkInCount: 320,
+    imageUrl: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?q=80&w=600&auto=format&fit=crop'
+  },
+  {
+    id: '14',
+    title: 'کارگاه عکاسی در شب',
+    description: 'آموزش عکاسی با نوردهی طولانی در پل طبیعت.',
+    location: { lat: 35.7538, lng: 51.4215 },
+    address: 'بزرگراه حقانی، پل طبیعت',
+    category: 'art',
+    status: 'upcoming',
+    startTime: '۱۴۰۲/۰۹/۲۵ - ۲۰:۰۰',
+    organizer: 'مدرسه عکاسی کلیک',
+    checkInCount: 45,
+    imageUrl: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=600&auto=format&fit=crop'
+  },
+  {
+    id: '15',
+    title: 'کوهپیمایی گروهی توچال',
+    description: 'صعود تا ایستگاه ۵ در هوای پاک زمستانی.',
+    location: { lat: 35.8239, lng: 51.4042 },
+    address: 'ولنجک، پارکینگ توچال',
+    category: 'sport',
+    status: 'upcoming',
+    startTime: '۱۴۰۲/۰۹/۲۸ - ۰۶:۰۰',
+    organizer: 'گروه کوهنوردی البرز',
+    checkInCount: 180,
+    imageUrl: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600&auto=format&fit=crop'
   }
 ];
 
