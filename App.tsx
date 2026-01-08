@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { Event, EventStatus } from './types';
 import { INITIAL_EVENTS } from './constants';
 import EventCard from './components/EventCard';
@@ -42,6 +42,8 @@ const App: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [isLocating, setIsLocating] = useState(false);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const lastScrollY = useRef(0);
 
   const categories: { id: Category; label: string; icon: React.ReactNode }[] = [
     { id: 'all', label: 'همه', icon: <Globe className="w-3.5 h-3.5" /> },
@@ -155,12 +157,28 @@ const App: React.FC = () => {
     }
   }, [selectedEventId]);
 
+  // Handle scroll visibility for mobile UI
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    if (window.innerWidth >= 768) return;
+
+    const currentScrollY = e.currentTarget.scrollTop;
+    if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
+      setIsHeaderVisible(false);
+    } else {
+      setIsHeaderVisible(true);
+    }
+    lastScrollY.current = currentScrollY;
+  }, []);
+
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-background font-sans relative" dir="rtl">
       {/* Sidebar Toggle for Mobile */}
       <Button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="fixed bottom-10 left-1/2 -translate-x-1/2 md:hidden z-50 rounded-full shadow-2xl font-bold gap-2 px-6 py-2.5 h-auto border-2 border-background/50 backdrop-blur-md animate-in fade-in slide-in-from-bottom-4 duration-500"
+        className={cn(
+          "fixed bottom-10 left-1/2 -translate-x-1/2 md:hidden z-50 rounded-full shadow-2xl font-bold gap-2 px-6 py-2.5 h-auto border-2 border-background/50 backdrop-blur-md transition-all duration-300",
+          !isHeaderVisible ? "translate-y-24 opacity-0" : "translate-y-0 opacity-100"
+        )}
         variant="default"
         size="sm"
       >
@@ -174,7 +192,10 @@ const App: React.FC = () => {
         isSidebarOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"
       )}>
         {/* Header */}
-        <header className="p-6 border-b space-y-4">
+        <header className={cn(
+          "p-6 border-b space-y-4 bg-card transition-transform duration-300 ease-in-out z-20",
+          !isHeaderVisible && "md:translate-y-0 -translate-y-full"
+        )}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground shadow-lg">
@@ -277,7 +298,7 @@ const App: React.FC = () => {
           </div>
         )}
 
-        <ScrollArea className="flex-grow" dir="rtl">
+        <ScrollArea className="flex-grow" dir="rtl" onScrollCapture={handleScroll}>
           <div className="p-6 pb-24 md:pb-6">
             <div className="flex items-center justify-between sticky top-0 bg-card/80 backdrop-blur-md py-2 z-10 mb-4 px-1">
               <h2 className="font-bold text-sm">
@@ -327,7 +348,10 @@ const App: React.FC = () => {
           </div>
         </ScrollArea>
 
-        <footer className="p-4 border-t bg-muted/30">
+        <footer className={cn(
+          "p-4 border-t bg-muted/30 transition-transform duration-300 ease-in-out",
+          !isHeaderVisible && "md:translate-y-0 translate-y-full"
+        )}>
           <div className="flex justify-between items-center text-[10px] text-muted-foreground font-black uppercase tracking-wider">
             <span>نسخه آزمایشی ۱.۰</span>
             <span>طراحی شده برای تهران</span>
