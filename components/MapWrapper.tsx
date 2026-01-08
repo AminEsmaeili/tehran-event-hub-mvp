@@ -116,7 +116,7 @@ const MapWrapper: React.FC<MapWrapperProps> = ({
 
         marker.bindTooltip(event.title, {
           direction: 'top',
-          offset: [12, -15], // Adjusted for better alignment above the circle
+          offset: [0, -20], // Adjusted for better alignment above the circle
           permanent: false,
           sticky: false,
           className: 'font-sans font-bold text-xs rounded-lg border-none shadow-xl px-3 py-2 bg-card text-card-foreground rtl pointer-events-none'
